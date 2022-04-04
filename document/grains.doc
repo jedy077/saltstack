@@ -420,4 +420,11 @@ GRAINS 우선 순위 (PRECEDENCE)
 
 아래로 갈수록 우선순위가 높다. 
 
+기본적은 grain core 는 /usr/lib/python3.6/site-packages/salt/grains 에 들어 있다. 
+이 부분을 참조하여 customed grain module을 어떻게 작성해야 하는것인지 확인이 가능하다. 
+
+Grain Sync 방법
+1. grains.highstate 을 통한 automatically sync
+2. saltutil.sync_grains or saltutil.sync_all function을 이용하여 수동으로 동기화 할 수 있다.
+
 
