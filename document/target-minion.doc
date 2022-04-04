@@ -1,0 +1,55 @@
+targeting minion 이란 어떤 미니언언을 실행할 것인가를 정하는 것이다. 
+hostname혹은 os 등 다양한 정보를 이용하여 targeting 을 정할 수 있다. 
+
+예를 들어 
+salt web1 apache.signal restart
+의 겨웅 hostname 이 web1 을 가지는 minion에게 apache 를 재시작 해라고 명령한다. 
+
+state 을 사용 할 경우, top.sls 을 이용하여 다음과 같이 표시할 수 있다. 
+base:
+  'web1':
+    - webserver    <--- sls 파일 네임
+
+* Grain을 이용한 targeting. 
+salt 에게 아래와 같이 지시할 수 잇다. 
+
+salt -G 'os:Fedora' test.version 
+---  --  ---------  ---------------
+salt grain condition excutioin module
+     glob
+
+COMPOUND TARGETING(혼합 타겟팅)
+salt -C 'G@os:Devian and webserver* or E@db.*' test.version
+: COMPOUND TARGETING -C 
+: Grain OS 가 Devian 이면서 webserver 인 미니언 혹은 E@db 라는 미니언
+
+**NodeGroup targetting  ( /etc/salt/master )
+
+nodegroup:
+  group1: 'L@foo.domain.com,bar.domain.com,baz.domain.com and bl*.domain.com'
+  group2: 'G@os:Debian and foo.domain.com'
+  group3; 'G@os:Debian and N@group1'
+
+
+이 외 기타 많은 방법읜 targing 이 존재한다.
+
+Matching the minion id
+Globbing
+Regular Expressions
+Lists
+Targeting using Grains
+Targeting using Pillar
+Subnet/IP Address Matching
+Compound matchers
+Precedence Matching
+Alternate Delimiters
+Node groups
+Defining Nodegroups as Lists of Minion IDs
+Batch Size
+SECO Range
+Prerequisites
+Preparing Salt
+Targeting with Range
+LOADABLE MATCHERS
+
+
