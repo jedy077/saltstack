@@ -1,0 +1,70 @@
+Pillar 에 STATIC DATA 저장
+
+pillar는 무엇인가 ?
+pillar 는 minion에게 global value 를 전달하는 interface이다. 
+pillar data는 salt state tree의 구조와 비슷한 구조를 가진다. 
+(grains 는 미니언에서 MASTER 로 데이터 FLOW를 가진다면, PILLAR 는 MASTER에서 MINION으로의 데이터 FLOW 를 가진다. )
+
+
+* PILLAR 사용법
+1. pillar_roots : file_root와 같은 구조로 pillar directory를 지정하여 상요한다. 기본적으로 /etc/salt/master config 파일에 아래와 같이 선언되어 있다. 
+
+pillar_roots:
+  base:
+    - /srv/pillar
+
+pillar data 는state top file과 동일하게 topfile을 이용하여  matching 되는 MINION에게 MAPPING 되어 있다. 
+
+/srv/pillar/top.sls
+[root@centos01 pillar]# cat top.sls 
+base:
+  '*':
+    - packages
+  'web*':
+    - vim
+  'os:Devian':
+    - match: grain
+    - servers
+
+PILLAR TOP파일은 모든 미니언에게 packages.sls 를 전달하며, web으로 시작되는 minion에게는 추가로 vim.sls 를 전달한다. 
+또한 os:Devian 은 match grain 즉 grain 정보를 사용하여 os 가 Devian 인 놈에게 servers 를 제공한다. 
+
+
+pillar key_word : 
+ignore_missing  - 이 부분은 누락된 Pillar 파일의 모든 오류가 무시됩니다. default 값은 false이다. 
+
+base:
+  '*':
+    - servers
+    - systems
+    - ignore_missing: True
+
+Pillar sls FILE
+[root@centos01 pillar]# vi packages.sls 
+
+{% if grains['os'] == 'RedHat' %}
+apache: httpd
+git: git
+{% elif grains['os'] == 'Devian' %}
+apache: apache2
+git: git-core
+{% endif %}
+
+company: foo Indestries
+
+pillar 는 PYTHON의 DICTINARY TYPE 이다. 위와 같이 sls 파일은 key 에 해당되는 value 값을 변환할 수 있다.  만약 state 문장에서 pkg.inistall: -name : apache 라고 정의 된다면, RedHat minion은 apache를 httpd 로 이해할 것이며, Devian에서는 apache2 로 이해할 것이다. 
+
+pillar를 state 문에 사용할 때는 아래와 같이 사용한다. 
+
+apache:
+  pkg.installed:
+    - name: {{ pillar['apache'] }}
+
+git:
+  pkg.installed:
+    - name {{ pillar['git'] }}
+
+
+state.sls 작성시 pillar['key']방식으로 표현하면, minion은 해당 pillar 의 key 값을 차좀하며 value 로 변환하여 running 이 된다. 
+
+
