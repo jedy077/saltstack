@@ -317,4 +317,50 @@ tlpdot 경로를 .으로 표현
 {{ tpldot }}
 
 
+** state module **
+'state module'은 실제 salt에서실제 실행 혹은 관리해야 하는 맵핑된 컨포넌트 들이다. 
+
+state module은 작성하기 쉽다.  아래 봐라
+/etc/salt/master:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 644
+    - source: salt://salt/manager
+
+vs
+etc_salt_master:
+  file.manager:
+    - name: /etc/salt/master
+    - user: root
+    - group: root
+    - mode: 644
+    - source://salt/manager
+
+
+BEST PRACTICES
+A well-written state function will follow these steps
+referce site : https://github.com/saltstack/salt/tree/master/salt/states
+
+
+def myfunc():
+  ret = {"name": name, "result": False, "change"|{} , "comment:":""}
+
+  if foo and bar:
+    ret["comment"] = "Only one of foo and bar is permitted"
+    return ret
+
+result = __salt__["modname.check"](name) --> 상태를 확인. --> 참조 사이트 https://docs.saltproject.io/en/latest/ref/modules/index.html#writing-execution-modules
+
+
+def myfunc():
+  if result:
+    ret["result"] = True
+    ret["comment"] = "{0} is already installed".format(name)
+    return ret
+
+
+
+
+
 
