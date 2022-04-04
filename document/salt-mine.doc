@@ -1,0 +1,7 @@
+Salt Mine 은 Grains 하고 비슷하다. 
+
+단지 Grain Data 보다 더 최신의 상태로 설계되어 있다. 
+
+Grains 는 publisher 방식으로 데이터를 수집 갱신하고 Minion 이 다른 Minion 에게 데이터를 콜하지만, Mine 은 master에서 전체 Minion에게 데이터를 콜하기 때문에 오버해드가 적게 든다.
+
+
