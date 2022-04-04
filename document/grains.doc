@@ -1,0 +1,327 @@
+*Grains란 - Grains는 Minion의 다양한 정보를 저장하고 있다. 
+[root@centos01 salt]# salt 'centos01.pastime.kr' grains.items 
+centos01.pastime.kr:
+    ----------
+    biosreleasedate:
+        01/14/2018
+    biosversion:
+        VMW71.00V.7581552.B64.1801142334
+    cpu_flags:
+        - fpu
+        - vme
+        - de
+        - pse
+        - tsc
+        - msr
+        - pae
+        - mce
+        - cx8
+        - apic
+        - sep
+        - mtrr
+        - pge
+        - mca
+        - cmov
+        - pat
+        - pse36
+        - clflush
+        - mmx
+        - fxsr
+        - sse
+        - sse2
+        - ss
+        - syscall
+        - nx
+        - rdtscp
+        - lm
+        - constant_tsc
+        - arch_perfmon
+        - nopl
+        - xtopology
+        - tsc_reliable
+        - nonstop_tsc
+        - cpuid
+        - pni
+        - pclmulqdq
+        - ssse3
+        - cx16
+        - pcid
+        - sse4_1
+        - sse4_2
+        - x2apic
+        - popcnt
+        - tsc_deadline_timer
+        - aes
+        - xsave
+        - avx
+        - f16c
+        - rdrand
+        - hypervisor
+        - lahf_lm
+        - cpuid_fault
+        - pti
+        - ssbd
+        - ibrs
+        - ibpb
+        - stibp
+        - fsgsbase
+        - tsc_adjust
+        - smep
+        - arat
+        - flush_l1d
+        - arch_capabilities
+    cpu_model:
+        Intel(R) Xeon(R) CPU E5-2630 v2 @ 2.60GHz
+    cpuarch:
+        x86_64
+    cwd:
+        /
+    disks:
+        - sr0
+        - sda
+    dns:
+        ----------
+        domain:
+        ip4_nameservers:
+            - 192.168.111.249
+            - 192.168.111.89
+        ip6_nameservers:
+        nameservers:
+            - 192.168.111.249
+            - 192.168.111.89
+        options:
+        search:
+            - pastime.kr
+        sortlist:
+    domain:
+        pastime.kr
+    efi:
+        True
+    efi-secure-boot:
+        False
+    fqdn:
+        centos01.pastime.kr
+    fqdn_ip4:
+        - 192.168.111.231
+    fqdn_ip6:
+    fqdns:
+        - centos01.pastime.kr
+    gid:
+        0
+    gpus:
+        |_
+          ----------
+          model:
+              SVGA II Adapter
+          vendor:
+              vmware
+    groupname:
+        root
+    host:
+        centos01
+    hwaddr_interfaces:
+        ----------
+        ens192:
+            00:50:56:8c:c3:6f
+        lo:
+            00:00:00:00:00:00
+    id:
+        centos01.pastime.kr
+    init:
+        systemd
+    ip4_gw:
+        192.168.111.1
+    ip4_interfaces:
+        ----------
+        ens192:
+            - 192.168.111.231
+        lo:
+            - 127.0.0.1
+    ip6_gw:
+        False
+    ip6_interfaces:
+        ----------
+        ens192:
+        lo:
+    ip_gw:
+        True
+    ip_interfaces:
+        ----------
+        ens192:
+            - 192.168.111.231
+        lo:
+            - 127.0.0.1
+    ipv4:
+        - 127.0.0.1
+        - 192.168.111.231
+    ipv6:
+    kernel:
+        Linux
+    kernelparams:
+        |_
+          - BOOT_IMAGE
+          - (hd0,gpt2)/vmlinuz-4.18.0-348.7.1.el8_5.x86_64
+        |_
+          - root
+          - /dev/mapper/cl-root
+        |_
+          - ro
+          - None
+        |_
+          - crashkernel
+          - auto
+        |_
+          - resume
+          - /dev/mapper/cl-swap
+        |_
+          - rd.lvm.lv
+          - cl/root
+        |_
+          - rd.lvm.lv
+          - cl/swap
+        |_
+          - rhgb
+          - None
+        |_
+          - quiet
+          - None
+    kernelrelease:
+        4.18.0-348.7.1.el8_5.x86_64
+    kernelversion:
+        #1 SMP Wed Dec 22 13:25:12 UTC 2021
+    locale_info:
+        ----------
+        defaultencoding:
+            UTF-8
+        defaultlanguage:
+            en_US
+        detectedencoding:
+            UTF-8
+        timezone:
+            KST
+    localhost:
+        centos01.pastime.kr
+    lsb_distrib_codename:
+        CentOS Linux 8
+    lsb_distrib_id:
+        CentOS Linux
+    lvm:
+        ----------
+        cl:
+            - home
+            - root
+            - swap
+    machine_id:
+        cf678469f84f4e3c81f1f7ac031c3af2
+    manufacturer:
+        VMware, Inc.
+    master:
+        centos01.pastime.kr
+    mdadm:
+    mem_total:
+        7767
+    nodename:
+        centos01.pastime.kr
+    num_cpus:
+        4
+    num_gpus:
+        1
+    os:
+        CentOS
+    os_family:
+        RedHat
+    osarch:
+        x86_64
+    oscodename:
+        CentOS Linux 8
+    osfinger:
+        CentOS Linux-8
+    osfullname:
+        CentOS Linux
+    osmajorrelease:
+        8
+    osrelease:
+        8.5.2111
+    osrelease_info:
+        - 8
+        - 5
+        - 2111
+    path:
+        /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+    pid:
+        420601
+    productname:
+        VMware7,1
+    ps:
+        ps -efHww
+    pythonexecutable:
+        /usr/bin/python3.6
+    pythonpath:
+        - /usr/bin
+        - /usr/lib64/python36.zip
+        - /usr/lib64/python3.6
+        - /usr/lib64/python3.6/lib-dynload
+        - /usr/lib64/python3.6/site-packages
+        - /usr/lib/python3.6/site-packages
+    pythonversion:
+        - 3
+        - 6
+        - 8
+        - final
+        - 0
+    saltpath:
+        /usr/lib/python3.6/site-packages/salt
+    saltversion:
+        3004
+    saltversioninfo:
+        - 3004
+    selinux:
+        ----------
+        enabled:
+            False
+        enforced:
+            Disabled
+    serialnumber:
+        VMware-42 0c 6f ed e0 86 26 31-c6 f5 ad be 84 28 46 13
+    server_id:
+        1825948534
+    shell:
+        /bin/sh
+    ssds:
+    swap_total:
+        8087
+    systemd:
+        ----------
+        features:
+            +PAM +AUDIT +SELINUX +IMA -APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD +IDN2 -IDN +PCRE2 default-hierarchy=legacy
+        version:
+            239
+    systempath:
+        - /usr/local/sbin
+        - /usr/local/bin
+        - /usr/sbin
+        - /usr/bin
+    transactional:
+        False
+    uid:
+        0
+    username:
+        root
+    uuid:
+        ed6f0c42-86e0-3126-c6f5-adbe84284613
+    virtual:
+        VMware
+    zfs_feature_flags:
+        False
+    zfs_support:
+        False
+    zmqversion:
+        4.3.4
+
+
+
+* Grains 를 이용하여 Tarket을 선별 할수 있다. 이럴 경우 Grains를 가장 많이 사용한다. 
+Target 선정 방법으로는 아래와 같은 명령어를 사용한다.
+
+- salt -G 'os:centos' test.ping  ## minion 중 os 가 centos인넘만 ping을 보내라. 
+
