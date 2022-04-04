@@ -328,4 +328,69 @@ Target 선정 방법으로는 아래와 같은 명령어를 사용한다.
 
 Grain command EXECISE
 salt '*' grains.ls  ## Grains 항목의 LIST를 보여준다. "
-salt '*' grains.items ## Grains 항목에 대한 값들을 보여 준다. Grain 항목 중 하나의 값만 알고 싶을 때는 salt '*' grains.item os 와 같이 items 대신에 item 을 사용하고 필요한 argument를 추가한다. 
+salt '*' grains.items ## Grains 항목에 대한 값들을 보여 준다. Grain 항목 중 하나의 값만 알고 싶을 때는 salt '*' grains.item os 와 같이 items 대신에 item 을 사용하고 필요한 argument를 추가한다.
+
+STATE 에서 사용 시 :
+	{{grains['key']}} 를 사용하여 target을 지정 할 수 있다.
+
+
+Grain 은 MINION 데몬에서 정보를 확인하여 SALT MASTER에게 전달 한다.
+이러한 정보는 STATIC 하게 MINION에서 설정 할 수 있다. 
+어디에다가 ? minion config 파일 혹은 /etc/salt/minit.d/ 에 *.conf 파일 추가 
+
+<default value>
+[root@centos01 salt]# salt 'centos02.pastime.kr' grains.item roles
+centos02.pastime.kr:
+    ----------
+    roles:
+[root@centos01 salt]# salt 'centos02.pastime.kr' grains.item cabinet
+centos02.pastime.kr:
+    ----------
+    cabinet:
+[root@centos01 salt]# salt 'centos02.pastime.kr' grains.item deployment
+centos02.pastime.kr:
+    ----------
+    deployment:
+[root@centos01 salt]# salt 'centos02.pastime.kr' grains.item cab_u
+centos02.pastime.kr:
+    ----------
+    cab_u:
+
+FILE ADDED - /etc/salt/minion.d/grains.conf
+grains:
+  roles:
+    - webserver
+    - memcache
+  deployment: datacenter4
+  cabinet: 13
+  cab_u: 14-15
+
+config 파일이 변경 될 경우 항상 데몬을 RESTART 해 줘서 적용할 것
+
+systemctl restart salt-minion
+
+다시 조회
+[root@centos01 salt]# salt 'centos02.pastime.kr' grains.item roles
+centos02.pastime.kr:
+    ----------
+    roles:
+        - webserver
+        - memcache
+
+Grains Static 설정은 아래와 같이 3가지 방법이 존재한다. 
+1. /etc/salt/minion 내에 작성
+2. /etc/salt/minion.d 에 conf 파일 생성하여 작성
+3. /etc/salt/grains 파일에 작성한다. 
+
+그럼 Grain은 어디서 사용하나. 
+1. pillar 혹은 Highstate 에서 top 파일을 작성하여 minion matching에 이용을 한다. 
+
+'roles:webserver':
+  - match: grain
+  - state0
+
+'roles:memcache':
+  - match: grain
+  - state1
+  - state2
+
