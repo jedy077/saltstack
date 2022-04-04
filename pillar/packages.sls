@@ -1,10 +1,3 @@
-{% if grains['os'] == 'RedHat' %}
-apache: httpd
-git: git
-{% elif grains['os'] == 'Devian' %}
-apache: apache2
-git: git-core
-{% endif %}
-
-company: foo Indestries
-
+bind:
+  pakcage-name: bind9
+  version: 9.9.5
