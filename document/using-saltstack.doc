@@ -251,3 +251,70 @@ SCENARIO 4 - NO ENVIRONMENT SPECIFIED, TOP_FILE_MERGING_STRATEGY IS "MERGE_ALL"
 New in version 2016.11.0.
 
 In this scenario, all configured states in all top files are applied. From the base environment, base1 would be applied to all minions, with base2 being applied only to minion1. From the dev environment, dev1 would be applied to all minions, with dev2 being applied only to minion2. Finally, from the qa environment, both the qa1 and qa2 states will be applied to all minions. Note that the qa1 states would not be applied twice, even though qa1 appears twice.
+
+
+** SLS template variable refrece
+
+{% for file in salt['cmd.run']('ls -l /opt/to_remove').splitlines() %}
+/opt/to_remove/{{ file }}:
+  file.absent
+{% endfor %}
+
+python에서 splitlines() 함수는 출력이 있는 결과에 개행문자 (\r \n) 과 같이 포함이 되어 있는 경우 이 부분을 하나씩 나눠, 나눈 결과값을 list [] 형태로 반환한다. 
+
+file.absent : salt state file 모듈중 하나로 해당 디렉토리에 file 및 directory 가 존재할 경우 삭제한다. ( 항상 해당 디렉토리에 내용이 없어야 한다.)
+
+
+opts template
+{{ opts['cachedir'] }}
+
+opts는 미니언의 configration 내용을 template 한다.  opts 는 dictionary type 이다. 
+
+
+pillar  : pillar 역시 dictionary type 으로 아래와 같이 직접 접근 할 수 있다. 
+{{ pillar['key'] }}
+
+salt 에서는 pillre 를 piller.get 을 이용하여 직접 접근하는 것이 좋다. 
+{{ salt['piller.get']('key','failover_value') }}
+{{ salt['piller.get']('staff:more:deeper') }}
+
+grains: minion 에 directly connect and get info ( grains is dictionary type)
+{{ grains['os'] }}
+{{ salt['grains.get']('os') }}
+
+saltenv 는 각 evnrioment 환경의 sls 을 모은다.수집하여 사용할 수있다. 
+{{ saltenv }}
+
+sls 는 sls 안에서만 참조 변수로 사용가능하다. 
+{{ sls }}
+
+slspath 는 sls 파일의 경로를 반환한다. file_roots
+{{ slspath }}
+
+sls_path 는slspath 와 동일하다 다만 경로 표시를 / 대신 _ 를 사용한다.
+{{ sls_path }}
+
+slsdotpath 역시 slspath 와 동일하다 다만 / 대신 .을 사용한다. 
+{{ slsdotpath }}
+
+slscolonpath 역시 slspath와 동일하다 다만 / 대신 :을 사용한다. 
+{{ slscolonpath }}
+
+tplpath sls file 의 전체 경로를 말한다. (보통 CACHEDIRECTORY 의 복사본 경로 - 사용하지 말자)
+{{ tplpath }}
+
+tplfile - file_roots 기준으로 처리되고 있는 SLS TEMPLATE FILE 상대 경로
+
+tpldir file_roots 에서 상대적이 sls 파일의 경로 ( slspath와 비슷)
+
+my-file:
+  file.managed:
+    source: salt://{{ tpldir }}/files/my-template
+tpldir 는 보통 salt 를 사용할대 상대적인 경로에 많이 사용한다. 
+
+tlpdot 경로를 .으로 표현
+
+{{ tpldot }}
+
+
+
