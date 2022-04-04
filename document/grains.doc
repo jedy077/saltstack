@@ -394,3 +394,30 @@ Grains Static 설정은 아래와 같이 3가지 방법이 존재한다.
   - state1
   - state2
 
+customed grins 는 아래와 같이 file_root 안의 _granis 에 모듀을 작성하여 사용할 수있다
+Grains 는 기본적으로 python 으로 모듀을 작성한다. 
+
+def yourfunction():
+    # initialize a grains dictionary
+    grains = {}
+    # Some code for logic that sets grains like
+    grains["yourcustomgrain"] = True
+    grains["anothergrain"] = "somevalue"
+    return grains
+
+
+그러면 coustomed grains 는 어젠 사용하는가?
+MINION TARGETTING 할때 사용할 정보를 모듈화 시키는 것이다. 
+
+
+customed grains 사용법은 추후 정보를 추가하여 작성한다. 
+
+GRAINS 우선 순위 (PRECEDENCE)
+1. core grain
+2. /etc/salt/grains
+3. /etc/salt/minion
+4. _grains ( cumtomed moulde grain)
+
+아래로 갈수록 우선순위가 높다. 
+
+
