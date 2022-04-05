@@ -585,3 +585,131 @@ def enforce_custom_thing(name, foo, bar=True):
 
     return ret
 
+
+
+--------------------------
+
+How to using salt state
+
+TOP.sls 파일 - sls 을 맵핑을 조건에 따라 CLIENT 를 맵핑함.
+SLS 파일
+DEFAULT LANGUAGE - YAML
+아래의 SLS 파일은 " apache package를 설치되어 있다면, 서비스를 running 하라라고 표현할 수 있다. "
+apache:                 // ID Declaration
+  pkg.installed: []     // state module. function
+  service.running:      // state module. function
+    - require:		// requirement 
+      - pkg: apache     // argument
+
+위에서 아래와 같이 추가해 보자. 
+apache:
+  pkg.installed:[]
+  service.running:
+    - watch:				// watch 는 require 기능과 동일하다. 아래 내용이 있다면 serivce 를 restart 진행한다.
+      - pkg: apache
+      - file: /etc/httpd/conf/httpd.conf
+      - user: apache
+  user.present:
+    - udi: 87
+    - gid: 87
+    - home: /var/www/html
+    - shell: /bin/nologin
+    - require:
+      - group: apache
+  group.present:
+    - gid: 87
+    - require:
+      - pkg: apache
+
+/etc/httpd/conf/httpd.conf:
+  file.manager:
+    - source: salt://apache/httpd.conf
+    - user: root
+    - group: root
+    - mode: 644
+
+
+
+**하나 이상의 SLS
+위의 예는 SINGLE SLS FILE이다. 
+그라나 필요에 따라 여러개의 SLS파일을 포함할 수 있습니다. 
+
+SLS파일은 directory에 놓여 진다. - 
+위의 파일인 경우, salt master file root 에 위치하게 된다. 
+apache/init.sls
+apache/httpd.conf
+
+** 여러 SLS 파일을 사용할 경우 took-key에 컴포넌트를 추가할 수 있다. 
+example>
+ssh/init.sls
+
+openssh-client:
+  pkg.installed
+
+/etc/ssh/sshd_config:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 644
+    - source: salt://ssh/sshd_config
+    - require:
+      - pkg: openssl-client
+
+ssh/server.sls
+include:
+  - ssh
+
+openssh-server:
+  pkg.installed:
+
+sshd:
+  service.running:
+    - require:
+      - pkg: openssh-client
+      - pkg: openssh-server
+      - file: /etc/ssh/banner
+      - file: /etc/ssh/sshd_config
+
+/etc/ssh/sshd_config:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 644
+    - source: salt://ssh/sshd_config
+    - require
+      - pkg: openssh-server
+
+/etc/ssh/banner
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 644
+    - source: salt://ssh/banner
+    - require:
+      - pkg: openssh-erver
+
+
+*** include 된 SLS 확장
+Example) 첫번째로 banner 를 추가 하고 그리고 나서 apache에 apache에 mod_python을 watch 할 경우.
+ssh/custom-server.sls
+
+include:
+  - ssh.server
+
+extend:
+  /etc/ssh/banner:
+    file:
+      - source: salt://ssh/custom_banner
+
+python/mod_python.sls
+include:
+  - apache
+
+extend:
+  apache:
+    service:
+      - watch:
+        - pkg: mod_python
+
+mod_python:
+  pkg.installed
