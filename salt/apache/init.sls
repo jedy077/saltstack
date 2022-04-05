@@ -1,24 +1,34 @@
 apache:
-  pkg.installed:[]
+  pkg.installed:
+    {% if grains['os'] == 'RedHat' %}
+    - name: httpd
+    {% endif %}
   service.running:
+    {% if grains['os'] == 'RedHat' %}
+    - name: httpd
+    {% endif %}
     - watch:
-      - pkg: apache
+      - pkg: httpd
       - file: /etc/httpd/conf/httpd.conf
       - user: apache
-  user.preset:
+
+  user.present:
     - uid: 87
     - gid: 87
     - home: /var/www/html
-    - shell: /bin/noloing
+    - shell: /bin/nologin
     - require:
-      - pkg: apache
+      - group: apache
+
   group.present:
-    - gid:87
+    - gid: 87
     - require:
       - pkg: apache
 
 /etc/httpd/conf/httpd.conf:
-  - source: salt://apache/httpd.conf
-  - user: root
-  - group: root
-  - mode: 644
+  file.managed:
+    - source: salt://apache/httpd.conf
+    - user: root
+    - group: root
+    - mode: 644
+

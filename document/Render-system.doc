@@ -1,0 +1,119 @@
+Default Render System : jinja , YAML
+Render System은 기본적으로 jinja -> YAML 로 변형을 한다. 그외 다양한 python이나 기타 등등의 render system 을 사용한다. 
+이러한 renderer을 이용하여 full coding 이 가능하다. 
+Renderer를 이용하여 coding 할 때 가장 중요한 키워드는 salt. grains, pillar 이다. 
+salt object 를 사용하면 template 내에서 salt function을 호출 할 수 있으며, grains를 사용하면 템플릿 내에서 Grans를 엑세스 할 수 있다. 
+
+예제> apache/init.sls
+apache:
+  pkg.installed:
+    {% if grains['os'] == 'RedHat' %}
+    - name: httpd
+    {% endif %}
+
+  service.running:
+    {% if grains['os'] == 'RedHat' %}
+    - name: httpd
+    {% endif %}
+    - watch:
+      - pkg: apache
+      - file: /etc/httpd/conf/httpd.conf
+      - user: apache
+
+  user.present:
+    - uid: 87
+    - gid: 87
+    - shell: /bin/noloing
+    - home: /var/www/html
+    - require:
+      - group: apache
+
+  group.present:
+    - gid: 87
+    - require:
+      - pkg: apache
+
+/etc/httpd/conf/httpd.conf:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 644
+    - source: salt://apache/httpd.conf
+
+** Jinja 를 이용하여 좀더 진보된 sls 를 작성해 보자. 
+moosefs/chunk.sls
+
+include:
+  - moosefs
+
+{% for mnt in salt['cmd.run']('ls /dev/data/moose*').split() %}
+/mnt/moose{{ mnt[-1] }}:
+  mount.mounted:
+    - device: {{ mnt }}
+    - fstype: xfs
+    - mkmnt: True
+  file.directory:
+    - user: mfs
+    - group: mfs
+    - require:
+      - user: mfs
+      - group: mfs
+{% endfor %}
+
+/etc/mfshdd.cfg :
+  file.managed:
+    - source: salt://moosefs/mfshdd.cfg
+    - user: root
+    - group: root
+    - mode: 644
+    - tempalte: jinja
+    - require:
+      - pkg: mfs-chunkserver
+
+/etc/mfschunkserver.cfg:
+  file.managed:
+    - source: salt://moosefs/mfschunkserver.cfg
+    - user: root
+    - group: root
+    - mode: 644
+    -template: jinja
+    - require:
+      - pkg: mfs-chunkserver
+
+
+mfs-chunkserver:
+  pkg.installed:[]
+
+mfschunkserver:
+  service.running:
+    - require:
+{% for mnt in salt['cmd.run']('ls /dev/data/moose') %}
+      - mount: /mnt/moose{{ mnt[-1] }}
+      - file: /mnt/moose{{ mnt[-1] }}
+{% endfor %}
+      - file: /etc/mfschunkserver.cfg
+      - file: /etc/mfshdd.cfg
+      - file: /var/lib/mfs
+
+
+**** python project redering ****
+python/django.sls
+#! py
+def run():
+  """
+    install the django package
+  """
+  return {"include":["python"], "django":{"pkg": ["installed"]}}
+
+
+#!pyds1
+include("python", delayed="True)
+state("django").pkg.installed()
+
+#!pyobjects
+include("python")
+Pkg.installed("django")
+
+** Running & debug
+salt '*' state.apply -l debug ( master )
+salt-call state.apply -l debug ( minon) 
